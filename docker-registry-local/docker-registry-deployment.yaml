@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: local-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:2
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - mountPath: /var/lib/registry
+              name: registry-storage
+      volumes:
+        - name: registry-storage
+          persistentVolumeClaim:
+            claimName: docker-registry-pvc  # Reference the PVC here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-registry-service
+  namespace: local-namespace  # Ensure this matches the namespace in your deployment
+spec:
+  selector:
+    app: registry  # Update selector to match the Deployment's label
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

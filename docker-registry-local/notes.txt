@@ -1,0 +1,3 @@
+kubectl apply -f docker-registry-pv.yaml -n local-namespace (creates PV and PVC for Registry)
+kubectl apply -f docker-registry-deployment.yaml -n local-namespace
+
