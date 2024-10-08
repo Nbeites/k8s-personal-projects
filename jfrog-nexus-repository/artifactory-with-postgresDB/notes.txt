@@ -1,0 +1,7 @@
+kubectl apply -f postgresql-deployment.yaml -n local-namespace (creates PV and PVC for Nexus)
+kubectl apply -f artifactory-deployment.yaml -n local-namespace
+
+(NOT WORKING - WIP)
+
+    -Try deploying it with helm charts
+    -Try this guide: https://jfrog.com/blog/install-jfrog-platform-on-k8s-in-under-20-minutes/

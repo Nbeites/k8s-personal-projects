@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nexus
+  namespace: local-namespace
   labels:
     app: nexus
 spec:
@@ -9,19 +10,39 @@ spec:
   selector:
     matchLabels:
       app: nexus
+#  strategy:
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxUnavailable: 1   # Maximum number of pods that can be unavailable during the update
+#      maxSurge: 1         # Maximum number of new pods that can be created during the update
   template:
     metadata:
       labels:
         app: nexus
+        version: "v1.0.2" #Increment here just to trigger new deployment restart in apply -f deployment.yaml
     spec:
+      # This is needed for nexus container to run properly :
+      # https://stackoverflow.com/questions/48513734/error-while-mounting-host-directory-in-nexus-docker
+      initContainers:
+        - name: volume-mount-hack
+          image: busybox
+          command: [ "sh", "-c", "chown -R 200:200 /nexus-data" ]  # Change ownership to user ID 200
+          volumeMounts:
+            - name: nexus-storage  # Use your PVC volume name here
+              mountPath: /nexus-data  # Same path that the Nexus container will use
+
       containers:
         - name: nexus
-          image: sonatype/nexus3  # Nexus 3 repository image
+          image: sonatype/nexus3
           ports:
             - containerPort: 8081
           volumeMounts:
             - name: nexus-storage
               mountPath: /nexus-data
+          securityContext:
+            runAsUser: 200  # Nexus typically runs as UID 200
+            runAsGroup: 200  # Group ID can also be set
+            # This is needed for nexus container to run properly
       volumes:
         - name: nexus-storage
           persistentVolumeClaim:
@@ -35,6 +56,12 @@ spec:
   selector:
     app: nexus
   ports:
-    - protocol: TCP
-      port: 8081
-      targetPort: 8081
+    - name: nexus-ui  # Name for the Nexus UI port
+      protocol: TCP
+      port: 8081      # Service port for UI access
+      targetPort: 8081 # Target port in the Nexus container
+    - name: nexus-docker  # Name for the Docker registry port
+      protocol: TCP
+      port: 5000     # Service port for Docker registry access
+      targetPort: 8081 # Nexus uses 8081 for Docker registry as well
+  type: NodePort  # Use NodePort to expose the service
