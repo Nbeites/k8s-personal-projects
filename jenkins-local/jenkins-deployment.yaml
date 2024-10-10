@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins  # Name of the deployment
+spec:
+  replicas: 1  # We are running only one instance of Jenkins
+  selector:
+    matchLabels:
+      app: jenkins  # Label to identify the Jenkins pod
+  template:
+    metadata:
+      labels:
+        app: jenkins  # Same label for the pod, so that the deployment can manage the pod
+    spec:
+      # InitContainer to fix volume permissions
+      initContainers:
+        - name: volume-permissions-fix  # Name of the init container
+          image: busybox  # Use the lightweight BusyBox image
+          command: ["sh", "-c", "chown -R 1000:1000 /var/jenkins_home"]  # Command to fix permissions
+          volumeMounts:
+            - name: jenkins-data  # Mount the same volume used by Jenkins
+              mountPath: /var/jenkins_home  # The path inside the container where the volume is mounted
+      containers:
+        - name: jenkins  # Main Jenkins container
+          image: jenkins/jenkins:lts  # Official Jenkins LTS image
+          ports:
+            - containerPort: 8080  # Expose the Jenkins UI on port 8080
+            - containerPort: 50000 # Jenkins agent communication port
+          volumeMounts:
+            - name: jenkins-data  # Attach the persistent volume for Jenkins data
+              mountPath: /var/jenkins_home  # This is where Jenkins stores its configurations and job data
+      volumes:
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins-pvc  # PVC to store Jenkins data persistently
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30000  # Expose Jenkins on port 30000 on your node
+  selector:
+    app: jenkins

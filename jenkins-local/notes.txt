@@ -1,0 +1,33 @@
+kubectl apply -f jenkinspv.yaml -n local-namespace
+kubectl apply -f jenkins-deployment.yaml -n local-namespace
+
+- After first installation, install at least "pipeline" plugin,
+to create the first pipeline with .jenkinsfile
+
+- And probably it needs also:
+
+    -pipeline-stage-view:latest
+    -workflow-aggregator:latest
+    -kubernetes:latest
+    -git:latest
+    -docker-workflow:latest
+
+- NOTE: In this version of jenkins (as of 10 October 2024 the latest is Jenkins v2.462.3)
+ there is an option to
+
+- In first installation search for this log for admin password
+
+    Jenkins initial setup is required. An admin user has been created and a password generated.
+    Please use the following password to proceed to installation:
+
+    1b221130b6da44cbab9a28d71d335566
+
+- This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
+    - cat /var/jenkins_home/secrets/initialAdminPassword
+
+- Then redefine password for admin (user: admin , pass: admin)
+
+- Define the default address and port to access (inside jenkins) (Eg. http://localhost:8080/)
+(This will be the port inside the pod, not related to port forward)
+(Should be the same as the defined in deployment.yaml to avoid confusion, but can be different)
+NOTE: But the port of the deployment.yaml MUST BE 8080 (Jenkins Default)

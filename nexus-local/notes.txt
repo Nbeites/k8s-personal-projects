@@ -1,4 +1,9 @@
-kubectl apply -f nexus-pv.yaml -n local-namespace (creates PV and PVC for Nexus)
+(creates PV and PVC for Nexus)
+kubectl apply -f nexus-pv.yaml -n local-namespace
+(applies deployment)
 kubectl apply -f nexus-deployment.yaml -n local-namespace
 
 (WORKING)
+
+- Maven repositories are created by default
+- Docker registry must be created manually
