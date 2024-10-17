@@ -1,0 +1,3 @@
+(applies deployment)
+kubectl apply -f deployment.yaml -n local-namespace
+

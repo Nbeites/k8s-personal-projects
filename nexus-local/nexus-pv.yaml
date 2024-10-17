@@ -8,8 +8,10 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "C:/tools/kubernetes-volumes/nexus"  # Path on the host system
     # This is really necessary
+    path: /mnt/data/nexus  # Path on the host system (If minikube is being used,
+    # minikube is the host system)
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

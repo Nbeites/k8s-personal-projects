@@ -6,6 +6,7 @@ spec:
   replicas: 1  # We are running only one instance of Jenkins
   selector:
     matchLabels:
+
       app: jenkins  # Label to identify the Jenkins pod
   template:
     metadata:

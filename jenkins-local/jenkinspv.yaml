@@ -7,7 +7,8 @@ spec:
     storage: 10Gi  # Size of the volume
   accessModes:
     - ReadWriteOnce  # Volume can be mounted for read-write by a single pod
-  persistentVolumeReclaimPolicy: Retain  # Keeps data even if the PVC is deleted
+#  persistentVolumeReclaimPolicy: Retain  # Keeps data even if the PVC is deleted
+  persistentVolumeReclaimPolicy: Delete  # Deletes data if the PVC is deleted
   hostPath:
     path: /mnt/data/jenkins  # Directory on the node where data will be stored
 

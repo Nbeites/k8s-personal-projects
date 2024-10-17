@@ -13,7 +13,9 @@ to create the first pipeline with .jenkinsfile
     -docker-workflow:latest
 
 - NOTE: In this version of jenkins (as of 10 October 2024 the latest is Jenkins v2.462.3)
- there is an option to
+ there is an option to install recommended plugins and includes pipelines
+
+- NOTE : Don't Forget to install jdk plugin
 
 - In first installation search for this log for admin password
 
@@ -26,8 +28,13 @@ to create the first pipeline with .jenkinsfile
     - cat /var/jenkins_home/secrets/initialAdminPassword
 
 - Then redefine password for admin (user: admin , pass: admin)
+    - If not prompted to do it, go to http://localhost:64526/user/admin/configure (64526 is just the forwarded local
+    port defined on kubernetes via Lens IDE)
 
 - Define the default address and port to access (inside jenkins) (Eg. http://localhost:8080/)
 (This will be the port inside the pod, not related to port forward)
 (Should be the same as the defined in deployment.yaml to avoid confusion, but can be different)
 NOTE: But the port of the deployment.yaml MUST BE 8080 (Jenkins Default)
+
+
+- Wipe Jenkins Data: rm -rf /mnt/data/jenkins
