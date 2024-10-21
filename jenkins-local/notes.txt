@@ -1,5 +1,11 @@
+First we need to create a specific image for this jenkins:
+
+docker build -t my-jenkins-with-docker .
+docker push my-jenkins-with-docker
+
 kubectl apply -f jenkinspv.yaml -n local-namespace
 kubectl apply -f jenkins-deployment.yaml -n local-namespace
+kubectl apply -f docker-agent-deployment.yaml -n local-namespace
 
 - After first installation, install at least "pipeline" plugin,
 to create the first pipeline with .jenkinsfile

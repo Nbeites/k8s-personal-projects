@@ -44,8 +44,13 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - name: http  # Name for the Jenkins UI port
+      port: 8080
       targetPort: 8080
-      nodePort: 30000  # Expose Jenkins on port 30000 on your node
+      nodePort: 30002  # New NodePort for Jenkins UI
+    - name: agent  # Name for the Jenkins agent communication port
+      port: 50000  # Exposing the agent communication port
+      targetPort: 50000
+      nodePort: 30003  # New NodePort for agent communication
   selector:
     app: jenkins

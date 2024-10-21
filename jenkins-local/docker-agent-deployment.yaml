@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-agent  # Name of the Jenkins agent deployment
+spec:
+  replicas: 1  # Number of agent pods you want to run
+  selector:
+    matchLabels:
+      app: jenkins-agent  # Label to identify the agent pod
+  template:
+    metadata:
+      labels:
+        app: jenkins-agent  # Label for the agent pod
+    spec:
+      containers:
+        - name: jenkins-agent
+          image: jenkins/inbound-agent:latest  # Use the Jenkins inbound agent image
+          env:
+            - name: JENKINS_URL
+              value: "http://192.168.49.2:30002"  # Jenkins service URL (minikube-ip : <exposed jenkins nodePort>)
+            - name: JENKINS_SECRET
+              value: "24b2e897364b7e1e1476e012faf9efc0bb0419eb1a574e76cdf5d60731703863"
+              # Replace with the agent secret you will generate in step 2
+              # Step 2 is in Notion Jenkins Config Page -> Ao criar o node, se se entrar dentro
+              # do node, esta la o secret
+            - name: JENKINS_AGENT_NAME
+              value: "jenkins-agent"  # The name of the agent node in Jenkins
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock  # Mount Docker socket to enable Docker commands
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock  # Use the host Docker socket
