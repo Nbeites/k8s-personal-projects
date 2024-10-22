@@ -1,0 +1,11 @@
+This image was built and pushed to nbeites public DockerHub
+
+EG.
+
+docker build -t myusername/jenkins-agent-docker:v1 .
+
+(Optional)docker tag <image-id> <dockerhub-username>/jenkins-agent-docker:<new-tag>
+
+docker push myusername/jenkins-agent-docker:v1
+
+Use that image in docker-agent-deployment so it has docker installed
