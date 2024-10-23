@@ -1,6 +1,8 @@
 # k8s-personal-projects
 k8s-personal-projects
 
+Pipelines Repo: https://github.com/Nbeites/jenkins-pipelines
+
 ## k8s-personal-projects
 
 - Follow notes.txt instructions (Run them on Lens terminal)
