@@ -1,3 +1,4 @@
+#DO NOT USE, WORKING BUT NOT DOCKER COMMANDS, DOCKER IS NOT EVEN RECOGNIZED IN PIPELINE
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,18 +13,22 @@ spec:
       labels:
         app: jenkins-agent  # Label for the agent pod
     spec:
-      initContainers:  # This container runs before the main container to set up Docker socket permissions
-        - name: init-docker-sock
-          image: busybox  # A minimal image to run basic commands
-          #To grant access to docker daemon, without this, the pod will not be able
-          #to execute docker commands like build for instance
-          command: ['sh', '-c', 'chmod 666 /var/run/docker.sock']
-          volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
+      initContainers:
+        # although there is a docker installations, docker execution does not work on this deployment
+        - name: docker-installation
+          image: busybox  # Use the lightweight BusyBox image
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.7.tgz &&
+              tar xzvf docker-20.10.7.tgz &&
+              mkdir -p /usr/local/bin &&  # Ensure the target directory exists
+              cp docker/* /usr/local/bin/ &&  # Use cp instead of mv
+              chmod +x /usr/local/bin/docker* &&
+              echo "Docker installed successfully";
       containers:
         - name: jenkins-agent
-          image: nbeites/jenkins-agent-docker:v3  # Use the custom Jenkins inbound agent image present in nbeites DockerHub
+          image: jenkins/inbound-agent:latest  # Use the Jenkins inbound agent image
           env:
             - name: JENKINS_URL
               #value: "http://192.168.49.2:30002"  # Jenkins service URL (minikube-ip : <exposed jenkins nodePort>) - Does not work
@@ -36,13 +41,10 @@ spec:
               # do node, esta la o secret
             - name: JENKINS_AGENT_NAME
               value: "jenkins-agent"  # The name of the agent node in Jenkins
+
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock  # Mount Docker socket to enable Docker commands
-      imagePullSecrets:
-        - name: dockerhub-secret  # Use the secret for private Docker Hub repositories
-          #Needs to be defined in kubernetes:
-          #kubectl create secret docker-registry dockerhub-secret --docker-username=nbeites --docker-password=<password> --docker-email=nm.beites@gmail.com
       volumes:
         - name: docker-sock
           hostPath:

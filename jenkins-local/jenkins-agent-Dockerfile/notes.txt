@@ -2,6 +2,8 @@ This image was built and pushed to nbeites public DockerHub
 
 EG.
 
+docker login
+
 docker build -t myusername/jenkins-agent-docker:v1 .
 
 (Optional)docker tag <image-id> <dockerhub-username>/jenkins-agent-docker:<new-tag>
