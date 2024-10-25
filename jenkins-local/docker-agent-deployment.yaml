@@ -23,7 +23,11 @@ spec:
               mountPath: /var/run/docker.sock
       containers:
         - name: jenkins-agent
-          image: nbeites/jenkins-agent-docker:v3  # Use the custom Jenkins inbound agent image present in nbeites DockerHub
+          image: nbeites/jenkins-agent-docker:v4  # Use the custom Jenkins inbound agent image present in nbeites DockerHub
+          securityContext:
+            #It's needed root user to manipulate etc/docker/daemon.json
+            runAsUser: 0  # Run as root user
+            runAsGroup: 0 # Optional: run as root group
           env:
             - name: JENKINS_URL
               #value: "http://192.168.49.2:30002"  # Jenkins service URL (minikube-ip : <exposed jenkins nodePort>) - Does not work
@@ -39,6 +43,8 @@ spec:
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock  # Mount Docker socket to enable Docker commands
+            - name: docker-config
+              mountPath: /etc/docker  # Mount host's /etc/docker directory
       imagePullSecrets:
         - name: dockerhub-secret  # Use the secret for private Docker Hub repositories
           #Needs to be defined in kubernetes:
@@ -47,3 +53,6 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock  # Use the host Docker socket
+        - name: docker-config
+          hostPath:
+            path: /etc/docker  # Mount host's /etc/docker directory

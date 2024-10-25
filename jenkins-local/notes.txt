@@ -43,4 +43,11 @@ to create the first pipeline with .jenkinsfile
 NOTE: But the port of the deployment.yaml MUST BE 8080 (Jenkins Default)
 
 
+- etc/docker/daemon.json of jenkins agent to access private repositories
+without security https:
+
+{
+  "insecure-registries" : ["myregistrydomain.com:5000"]
+}
+
 - Wipe Jenkins Data: rm -rf /mnt/data/jenkins

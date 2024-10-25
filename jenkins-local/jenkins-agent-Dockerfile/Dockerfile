@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
-    gnupg
+    gnupg \
+    nano
 
 # Install Docker using the official Docker installation script
 RUN curl -fsSL https://get.docker.com | sh
@@ -17,8 +18,8 @@ RUN curl -fsSL https://get.docker.com | sh
 # Add Jenkins user to the Docker group to allow running Docker commands
 RUN usermod -aG docker jenkins
 
-# Fix the Docker socket permissions inside the container (this should work for most cases)
-RUN chmod 666 /var/run/docker.sock
+## Fix the Docker socket permissions inside the container (this should work for most cases)
+#RUN chmod 666 /var/run/docker.sock
 
 # Clean up to reduce image size
 RUN apt-get clean
