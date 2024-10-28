@@ -63,5 +63,5 @@ spec:
     - name: nexus-docker  # Name for the Docker registry port
       protocol: TCP
       port: 5000     # Service port for Docker registry access
-      targetPort: 8081 # Nexus uses 8081 for Docker registry as well
+      targetPort: 8082 # Nexus uses 8081 for Docker registry as well
   type: NodePort  # Use NodePort to expose the service

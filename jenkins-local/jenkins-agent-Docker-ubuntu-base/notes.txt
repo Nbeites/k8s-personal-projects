@@ -1,0 +1,16 @@
+This image was built and pushed to nbeites public DockerHub
+
+EG.
+
+docker login 
+
+docker build -t nbeites/jenkins-agent-docker-ubuntu:v1 .
+
+(Optional)docker tag <image-id> <dockerhub-username>/jenkins-agent-docker:<new-tag>
+
+docker push nbeites/jenkins-agent-docker-ubuntu:v1
+
+Use that image in docker-agent-deployment so it has docker installed
+
+
+(Command Example for login: docker login -u admin -p admin http://nexus-service.local-namespace.svc.cluster.local:8081/repository/docker-registry)

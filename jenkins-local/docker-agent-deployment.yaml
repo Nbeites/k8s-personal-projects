@@ -1,3 +1,4 @@
+#This is the correct deployment for jenkins agent
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +18,20 @@ spec:
           image: busybox  # A minimal image to run basic commands
           #To grant access to docker daemon, without this, the pod will not be able
           #to execute docker commands like build for instance
-          command: ['sh', '-c', 'chmod 666 /var/run/docker.sock']
+          # Insecure Registries commands used for docker login via agent
+          #
+          command:
+            - sh
+            - -c
+            - |
+              chmod 666 /var/run/docker.sock && \
+              mkdir -p /etc/docker && \
+              if [ -f /etc/docker/daemon.json ]; then \
+                cat /etc/docker/daemon.json | grep -q "insecure-registries" || \
+                sed -i '/^{/a "insecure-registries": ["nexus-service.local-namespace.svc.cluster.local:8081"],' /etc/docker/daemon.json; \
+              else \
+                echo '{ "insecure-registries": ["nexus-service.local-namespace.svc.cluster.local:8081"] }' > /etc/docker/daemon.json; \
+              fi
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock

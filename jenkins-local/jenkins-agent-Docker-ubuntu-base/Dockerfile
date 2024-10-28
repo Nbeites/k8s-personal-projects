@@ -1,3 +1,10 @@
+# This was tried, the Dockefile builds but does not work on any deployment
+# of jenkins agent, here in case of need as an example of base ubuntu image
+
+# This example is used to install jenkins agent in ubuntu base,
+# but can be adapted to be used as clean ubuntu image :) by removing
+# jenkins agent related stuff
+
 FROM ubuntu:20.04
 
 # Install dependencies and tools for Docker installation
@@ -7,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     lsb-release \
+    nano \
     software-properties-common
 
 # Add Docker’s official GPG key
