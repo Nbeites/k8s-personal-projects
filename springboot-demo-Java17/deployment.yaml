@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springboot-demo-deployment
+  name: springboot-demo
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: springboot-demo
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springboot-demo
-          image: your-docker-repo/springboot-demo:version
+          image: nbeites/springboot-demo:0.0.1-SNAPSHOT
           ports:
             - containerPort: 8080
 ---
